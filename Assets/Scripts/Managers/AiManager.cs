@@ -32,29 +32,5 @@ namespace SurvivaLight
         }
 
         
-        public void DisableControl()
-        {
-            if (botMovement != null)
-                botMovement.enabled = false;
-
-            if (stateController != null)
-                stateController.enabled = false;
-
-            botAttack.enabled = false;
-            
-        }
-
-        
-        public void EnableControl()
-        {
-            if (botMovement != null)
-                botMovement.enabled = true;
-
-            if (stateController != null)
-                stateController.enabled = true;
-
-            botAttack.enabled = true;
-           
-        }
     }
 }

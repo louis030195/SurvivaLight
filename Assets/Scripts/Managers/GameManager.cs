@@ -41,7 +41,7 @@ namespace SurvivaLight
 
         private void Awake()
         {
-            cameraControl.player = Instantiate(playerPrefab, new Vector3(500, 0, 500), new Quaternion(0, 0, 0, 0));
+            
 
         }
 
@@ -52,10 +52,10 @@ namespace SurvivaLight
             startWait = new WaitForSeconds(startDelay);
             endWait = new WaitForSeconds(endDelay);
 
-            SpawnAllAi();
             gameState = GameState.Playing;
-
             player = playerPrefab.GetComponent<PlayerManager>();
+            cameraControl.player = Instantiate(playerPrefab, new Vector3(500, 0, 500), new Quaternion(0, 0, 0, 0));
+
 
             // Once the ai have been created, start the game.
             StartCoroutine(GameLoop());
@@ -114,6 +114,7 @@ namespace SurvivaLight
             roundNumber++;
             messageText.text = "ROUND " + roundNumber;
 
+
             // Wait for the specified length of time until yielding control back to the game loop.
             yield return startWait;
         }
@@ -123,7 +124,8 @@ namespace SurvivaLight
         {
             roundWon = false;
             // As soon as the round begins
-            EnableControl();
+            SpawnAllAi();
+            player.control = true;
 
             // Clear the text from the screen.
             messageText.text = string.Empty;
@@ -154,46 +156,14 @@ namespace SurvivaLight
 
 
 
-        private void EnableControl()
-        {
-            for (int i = 0; i < bots.Count; i++)
-            {
-                bots[i].EnableControl();
-            }
-            player.control = true;
-        }
-
-
         private void DisableControl()
         {
             for (int i = 0; i < bots.Count; i++)
             {
-                bots[i].DisableControl();
+                Destroy(bots[i].instance);
             }
             player.control = false;
-        }
-
-
-
-
-        public IEnumerator FadeTextToFullAlpha(float t, Text i)
-        {
-            i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
-            while (i.color.a < 1.0f)
-            {
-                i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a + (Time.deltaTime / t));
-                yield return null;
-            }
-        }
-
-        public IEnumerator FadeTextToZeroAlpha(float t, Text i)
-        {
-            i.color = new Color(i.color.r, i.color.g, i.color.b, 1);
-            while (i.color.a > 0.0f)
-            {
-                i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a - (Time.deltaTime / t));
-                yield return null;
-            }
+            bots.Clear();
         }
     }
 }

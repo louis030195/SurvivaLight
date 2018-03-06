@@ -14,7 +14,7 @@ namespace SurvivaLight
         public float inputDelay = 0.1f;
         public float forwardVel = 120;
         public float rotateVel = 100;
-        [HideInInspector]public bool control;
+        [HideInInspector] public bool control;
 
         Quaternion targetRotation;
         float forwardInput, turnInput, attackInput;
@@ -26,6 +26,7 @@ namespace SurvivaLight
 
         void Start()
         {
+
             targetRotation = transform.rotation;
             if (GetComponent<Rigidbody>())
                 rb = GetComponent<Rigidbody>();
@@ -50,6 +51,7 @@ namespace SurvivaLight
                 Attack();
                 Turn();
             }
+            
         }
 
         private void FixedUpdate()
