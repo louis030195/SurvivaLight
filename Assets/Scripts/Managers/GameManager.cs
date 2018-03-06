@@ -24,7 +24,7 @@ namespace SurvivaLight
         public CameraControl cameraControl;       // Reference to the CameraControl script for control during different phases.
         [HideInInspector]
         public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
-        public PlayerManager player;
+        [HideInInspector]public PlayerManager player;
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
         public int numRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
@@ -54,6 +54,8 @@ namespace SurvivaLight
 
             SpawnAllAi();
             gameState = GameState.Playing;
+
+            player = playerPrefab.GetComponent<PlayerManager>();
 
             // Once the ai have been created, start the game.
             StartCoroutine(GameLoop());
