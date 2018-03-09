@@ -17,7 +17,7 @@ namespace SurvivaLight
         {
             RaycastHit hit;
 
-            Vector3 castOrigin = controller.eyes.position - controller.eyes.forward * controller.aiParameters.lookSphereCastRadius * 2; // the origin of the spherecast need to start behind
+            Vector3 castOrigin = controller.eyes.position - controller.eyes.forward * controller.aiParameters.lookSphereCastRadius; // the origin of the spherecast need to start behind
                                                                                                                                         // the gameobject
             //Debug.Log("Origin : " + castOrigin.z);
             Debug.DrawRay(castOrigin, controller.eyes.forward.normalized * controller.aiParameters.attackRange, Color.red);

@@ -11,12 +11,23 @@ namespace SurvivaLight
         [HideInInspector] public NavMeshAgent navMeshAgent;
         private new Rigidbody rigidbody;              // Reference used to move the bot.
         private Vector3 direction;
+        public AudioSource movementAudio;         // Reference to the audio source used to play sounds.
+        // TODO : array clip
+        public AudioClip idling;            // Audio to play when the bot isn't moving.
+        public AudioClip walking;           // Audio to play when the bot is moving.
 
         private void Awake()
         {
             rigidbody = GetComponent<Rigidbody>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.speed = speed;
+        }
+
+
+        private void Audio()
+        {
+            movementAudio.clip = walking;
+            movementAudio.Play(); // Different audio per movement behaviour ?
         }
 
         private Vector3 RandomNavSphere(Vector3 origin,int distance)
@@ -57,6 +68,7 @@ namespace SurvivaLight
 
         public void Move(Vector3 destination)
         {
+            Audio();
             if (navMeshAgent.enabled)
                 navMeshAgent.destination = destination;
         }

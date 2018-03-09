@@ -24,10 +24,9 @@ namespace SurvivaLight
             RaycastHit hit;
 
 
-            // SphereCast is used to detect moving object, so prob only for carnivorous animals
-            // only detect collider with Eatable layer => huge optimisation
+            // SphereCast is used to detect moving object
             // TODO : Change to overlapsphere (check all direction around)
-            if (Physics.SphereCast(controller.eyes.position, controller.aiParameters.lookSphereCastRadius, controller.eyes.forward, out hit, controller.aiParameters.lookRange, LayerMask.GetMask("Eatable")) && hit.rigidbody.tag != "StaticEatable")
+            if (Physics.SphereCast(controller.eyes.position, controller.aiParameters.lookSphereCastRadius, controller.eyes.forward, out hit, controller.aiParameters.lookRange, LayerMask.GetMask("Player")))
             {
                 controller.chaseTarget = hit.transform;
                 return true;

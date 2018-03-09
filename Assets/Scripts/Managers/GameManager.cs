@@ -20,30 +20,17 @@ namespace SurvivaLight
         public GameObject[] aiPrefabs;        // prefabs
         public GameObject groundPrefab;
         public GameObject playerPrefab;
-        public Text GUI;
-        public CameraControl cameraControl;       // Reference to the CameraControl script for control during different phases.
-        [HideInInspector]
-        public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
+       [HideInInspector]public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
         [HideInInspector]public PlayerManager player;
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
-        public int numRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
-        public float startDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
-        public float endDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
-
-        private bool roundWon;
+        public float startDelay = 5f;             // The delay between the start of phases.
+        public float endDelay = 5f;               // The delay between the end of phases.
 
         private GameState gameState;
-        private int roundNumber;                  // Which round the game is currently on.
-        private WaitForSeconds startWait;         // Used to have a delay whilst the round starts.
-        private WaitForSeconds endWait;           // Used to have a delay whilst the round or game ends.
+        private WaitForSeconds startWait;         // Used to have a delay whilst the game starts.
+        private WaitForSeconds endWait;           // Used to have a delay whilst the game ends.
 
-
-        private void Awake()
-        {
-            
-
-        }
 
         // Use this for initialization
         void Start()
@@ -54,11 +41,21 @@ namespace SurvivaLight
 
             gameState = GameState.Playing;
             player = playerPrefab.GetComponent<PlayerManager>();
-            cameraControl.player = Instantiate(playerPrefab, new Vector3(500, 0, 500), new Quaternion(0, 0, 0, 0));
+            player.instance = Instantiate(playerPrefab, new Vector3(0, 1, 0), new Quaternion(0, 0, 0, 0));
 
 
             // Once the ai have been created, start the game.
             StartCoroutine(GameLoop());
+        }
+
+        Vector3 RandomCircle(Vector3 center, float radius)
+        {
+            float ang = Random.value * 360;
+            Vector3 pos;
+            pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
+            pos.y = center.y;
+            pos.z = center.z + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+            return pos;
         }
 
         public void SpawnAllAi()
@@ -66,7 +63,7 @@ namespace SurvivaLight
             for (int i = 0; i < startingAi; i++)
             {
                 AiManager bot = new AiManager();
-                bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], new Vector3(i * 80, 1, i * 80), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
+                bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, 50.0f), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
                 bot.SetupAI();
                 bots.Add(bot);
 
@@ -77,25 +74,23 @@ namespace SurvivaLight
         private IEnumerator GameLoop()
         {
             // Start off by running the 'RoundStarting' coroutine but don't return until it's finished.
-            yield return StartCoroutine(RoundStarting());
+            yield return StartCoroutine(GameStarting());
 
             // Once the 'RoundStarting' coroutine is finished, run the 'RoundPlaying' coroutine but don't return until it's finished.
-            yield return StartCoroutine(RoundPlaying());
+            yield return StartCoroutine(GamePlaying());
 
             // Once execution has returned here, run the 'RoundEnding' coroutine, again don't return until it's finished.
-            yield return StartCoroutine(RoundEnding());
+            yield return StartCoroutine(GameEnding());
 
             // This code is not run until 'RoundEnding' has finished.  At which point, check if a game winner has been found.
             switch (gameState)
             {
                 case GameState.Won:
                     // If there is a game winner, restart the level.
-                    messageText.text = "CONGRATULATION";
                     SceneManager.LoadScene(0);
                     break;
                 case GameState.Lost:
                     // If game is lost, restart the level.
-                    messageText.text = "LOSER !!";
                     SceneManager.LoadScene(0);
                     break;
                 case GameState.Playing:
@@ -106,13 +101,12 @@ namespace SurvivaLight
             }
         }
 
-        private IEnumerator RoundStarting()
+        private IEnumerator GameStarting()
         {
+            SpawnAllAi();
             DisableControl();
-            
-            // Increment the round number and display text showing the players what round it is.
-            roundNumber++;
-            messageText.text = "ROUND " + roundNumber;
+            gameState = GameState.Playing;
+            messageText.text = "Playing";
 
 
             // Wait for the specified length of time until yielding control back to the game loop.
@@ -120,35 +114,44 @@ namespace SurvivaLight
         }
 
 
-        private IEnumerator RoundPlaying()
+        private IEnumerator GamePlaying()
         {
-            roundWon = false;
+            
             // As soon as the round begins
-            SpawnAllAi();
-            player.control = true;
+            EnableControl();
 
             // Clear the text from the screen.
             messageText.text = string.Empty;
             
-            while (!RoundFinished())
+            while (!GameFinished())
             {
                 // ... return on the next frame.
                 yield return null;
             }
         }
 
-        private bool RoundFinished()
+        private bool GameFinished()
         {
-            return bots.Count == 0 || !player; // All AIs are dead or player is dead
+            return CountBotInstances() == 0 || !player.instance; // All AIs are dead or player is dead
         }
 
 
-        private IEnumerator RoundEnding()
+        private IEnumerator GameEnding()
         {
             // Stop from moving.
-            DisableControl();
+            // DisableControl();
 
-            if (bots.Count == 0) gameState = GameState.Won; else gameState = GameState.Lost; // If we killed all AI = won, else we lost
+            // If we killed all AI = won, else we lost
+            if (CountBotInstances() == 0)
+            {
+                messageText.text = "Win";
+                gameState = GameState.Won;
+            }
+            else
+            {
+                messageText.text = "Game Over";
+                gameState = GameState.Lost;
+            }
 
             // Wait for the specified length of time until yielding control back to the game loop.
             yield return endWait;
@@ -160,10 +163,28 @@ namespace SurvivaLight
         {
             for (int i = 0; i < bots.Count; i++)
             {
-                Destroy(bots[i].instance);
+                bots[i].DisableControl();
             }
             player.control = false;
-            bots.Clear();
+        }
+
+        private void EnableControl()
+        {
+            for (int i = 0; i < bots.Count; i++)
+            {
+                bots[i].EnableControl();
+            }
+            player.control = true;
+        }
+
+        private int CountBotInstances()
+        {
+            int count = 0;
+            for(int i = 0; i < bots.Count; i++)
+            {
+                if (bots[i].instance) count++;
+            }
+            return count;
         }
     }
 }

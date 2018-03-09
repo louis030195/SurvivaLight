@@ -12,10 +12,12 @@ namespace SurvivaLight
         public Image fillImage;                           // The image component of the slider.
         public Color fullHealthColor = Color.green;       // The color the health bar will be when on full health.
         public Color zeroHealthColor = Color.red;         // The color the health bar will be when on no health.
-
-        private AudioSource getAttackedAudio;               // The audio source to play when the bot get attacked.
+        
         private float currentHealth;                      // How much health the bot currently has.
         [HideInInspector]public bool dead;                                // Has the bot been reduced beyond zero health yet?
+        public AudioSource healthAudio;               // The audio source to play.
+        public AudioClip gettingHit;            // Audio to play when the bot is getting hit.
+        public AudioClip dying;           // Audio to play when the bot is dying.
 
 
         public float getHealth() // can get, not set
@@ -23,30 +25,40 @@ namespace SurvivaLight
             return currentHealth;
         }
 
-
+        private void Awake()
+        {
+            
+        }
 
 
         private void OnEnable()
         {
             currentHealth = startingHealth;
-            // Debug.Log("c Health" + currentHealth);
-            // Debug.Log("s Health" + startingHealth);
             dead = false;
 
             // Update the health slider's value and color.
             SetHealthUI();
         }
 
+        private void Audio()
+        {
+            if (!dead)
+                healthAudio.clip = gettingHit;
+            else
+                healthAudio.clip = dying;
+
+            if (!healthAudio.isPlaying)
+            {
+                healthAudio.Play();
+            }
+        }
+
 
         public void TakeDamage(float amount)
         {
-            // Play audio when attacked
-            /*if (getAttackedAudio != null)
-                getAttackedAudio.Play();
-                */
+            
             // Reduce current health by the amount of damage done.
             currentHealth -= amount;
-            //Debug.Log("My health is now at " + currentHealth);
             // Change the UI elements appropriately.
             SetHealthUI();
 
@@ -55,6 +67,7 @@ namespace SurvivaLight
             {
                 OnDeath();
             }
+            Audio();
         }
 
 
@@ -73,7 +86,11 @@ namespace SurvivaLight
             // Set the flag so that this function is only called once.
             dead = true;
             
-            gameObject.GetComponent<NavMeshAgent>().isStopped = true; // TODO : player, no navmeshagent
+            Destroy(gameObject);
+            //if (gameObject.GetComponent<NavMeshAgent>())
+            //    gameObject.GetComponent<NavMeshAgent>().isStopped = true;
+            //else
+            //    gameObject.GetComponent<PlayerManager>().control = false;
         }
     }
 }

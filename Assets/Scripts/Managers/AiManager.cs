@@ -31,6 +31,31 @@ namespace SurvivaLight
 
         }
 
-        
+        // Used during the phases of the game where the player shouldn't be able to control their tank.
+        public void DisableControl()
+        {
+            if (botMovement != null)
+                botMovement.enabled = false;
+
+            if (stateController != null)
+                stateController.enabled = false;
+
+            botAttack.enabled = false;
+        }
+
+
+        // Used during the phases of the game where the player should be able to control their tank.
+        public void EnableControl()
+        {
+            if (botMovement != null)
+                botMovement.enabled = true;
+
+            if (stateController != null)
+                stateController.enabled = true;
+
+            botAttack.enabled = true;
+        }
+
+
     }
 }
