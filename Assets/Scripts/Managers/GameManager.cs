@@ -16,9 +16,8 @@ namespace SurvivaLight
         };
 
 
-        public int startingAi;    // Think to use a scriptableobject to param instead
-        public GameObject[] aiPrefabs;        // prefabs
-        public GameObject groundPrefab;
+        public int startingAi;                           // Think to use a scriptableobject to param instead
+        public GameObject[] aiPrefabs;                   // prefabs
         public GameObject playerPrefab;
        [HideInInspector]public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
         [HideInInspector]public PlayerManager player;
@@ -26,10 +25,13 @@ namespace SurvivaLight
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
         public float startDelay = 5f;             // The delay between the start of phases.
         public float endDelay = 5f;               // The delay between the end of phases.
+        public float spawnDelay = 2f;
 
         private GameState gameState;
         private WaitForSeconds startWait;         // Used to have a delay whilst the game starts.
         private WaitForSeconds endWait;           // Used to have a delay whilst the game ends.
+        private WaitForSeconds spawnWait;
+        private int totalAi;                      // Total AIs that will spawn, changes per difficulty
 
 
         // Use this for initialization
@@ -38,6 +40,9 @@ namespace SurvivaLight
             // Create the delays so they only have to be made once.
             startWait = new WaitForSeconds(startDelay);
             endWait = new WaitForSeconds(endDelay);
+            spawnWait = new WaitForSeconds(spawnDelay);
+
+            totalAi = 50;
 
             gameState = GameState.Playing;
             player = playerPrefab.GetComponent<PlayerManager>();
@@ -58,15 +63,16 @@ namespace SurvivaLight
             return pos;
         }
 
-        public void SpawnAllAi()
+        public IEnumerator SpawnAllAi()
         {
-            for (int i = 0; i < startingAi; i++)
+            //for (int i = 0; i < startingAi; i++)
+            if(CountBotInstances() < totalAi)
             {
                 AiManager bot = new AiManager();
-                bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, 50.0f), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
+                bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, Random.Range(50,100)), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
                 bot.SetupAI();
                 bots.Add(bot);
-
+                yield return spawnWait;
             }
         }
 
@@ -104,7 +110,7 @@ namespace SurvivaLight
         private IEnumerator GameStarting()
         {
             SpawnAllAi();
-            DisableControl();
+            // DisableControl();
             gameState = GameState.Playing;
             messageText.text = "Playing";
 
@@ -118,16 +124,16 @@ namespace SurvivaLight
         {
             
             // As soon as the round begins
-            EnableControl();
+            // EnableControl();
 
             // Clear the text from the screen.
             messageText.text = string.Empty;
             
-            while (!GameFinished())
+            do
             {
                 // ... return on the next frame.
-                yield return null;
-            }
+                yield return StartCoroutine(SpawnAllAi());
+            } while (!GameFinished()) ;
         }
 
         private bool GameFinished()

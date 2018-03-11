@@ -382,6 +382,7 @@ MonoBehaviour:
   messageText: {fileID: 1924915299}
   startDelay: 3
   endDelay: 3
+  spawnDelay: 2
 --- !u!4 &673652768
 Transform:
   m_ObjectHideFlags: 0
