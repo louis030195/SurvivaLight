@@ -40,8 +40,11 @@ namespace SurvivaLight
 
         private void Audio()
         {
-            attackAudio.clip = attack;
-            attackAudio.Play();
+            if (attackAudio)
+            {
+                attackAudio.clip = attack;
+                attackAudio.Play();
+            }
         }
     }
 }

@@ -42,14 +42,17 @@ namespace SurvivaLight
 
         private void Audio()
         {
-            if (!dead)
-                healthAudio.clip = gettingHit;
-            else
-                healthAudio.clip = dying;
-
-            if (!healthAudio.isPlaying)
+            if (healthAudio)
             {
-                healthAudio.Play();
+                if (!dead)
+                    healthAudio.clip = gettingHit;
+                else
+                    healthAudio.clip = dying;
+
+                if (!healthAudio.isPlaying)
+                {
+                    healthAudio.Play();
+                }
             }
         }
 
