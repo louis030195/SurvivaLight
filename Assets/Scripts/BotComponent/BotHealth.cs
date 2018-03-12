@@ -12,7 +12,8 @@ namespace SurvivaLight
         public Image fillImage;                           // The image component of the slider.
         public Color fullHealthColor = Color.green;       // The color the health bar will be when on full health.
         public Color zeroHealthColor = Color.red;         // The color the health bar will be when on no health.
-        
+
+        Animator animator;
         private float currentHealth;                      // How much health the bot currently has.
         [HideInInspector]public bool dead;                // Has the bot been reduced beyond zero health yet?
         public AudioSource healthAudio;                   // The audio source to play.
@@ -21,6 +22,12 @@ namespace SurvivaLight
         public GameObject[] bloodPrefabs;                 // Blood to spill when getting hit
         public GameObject[] bloodEffects;
 
+
+        // Use this for initialization
+        void Start()
+        {
+            animator = GetComponent<Animator>();
+        }
 
         public float getHealth()                          // can get, not set
         {
@@ -102,8 +109,8 @@ namespace SurvivaLight
         {
             // Set the flag so that this function is only called once.
             dead = true;
-            
-            Destroy(gameObject);
+            animator.SetInteger("die", 1);
+            Destroy(gameObject,0.5f);
             //if (gameObject.GetComponent<NavMeshAgent>())
             //    gameObject.GetComponent<NavMeshAgent>().isStopped = true;
             //else
