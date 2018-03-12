@@ -19,7 +19,7 @@ namespace SurvivaLight
         public int startingAi;                           // Think to use a scriptableobject to param instead
         public GameObject[] aiPrefabs;                   // prefabs
         public GameObject playerPrefab;
-       [HideInInspector]public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
+        [HideInInspector]public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
         [HideInInspector]public PlayerManager player;
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.

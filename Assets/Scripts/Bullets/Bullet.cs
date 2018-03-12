@@ -20,7 +20,7 @@ namespace SurvivaLight
         {
             // Find the BotHealth script associated with the rigidbody.
             BotHealth targetHealth = other.GetComponent<BotHealth>();
-
+            
             // If there is no BotHealth script attached to the gameobject
             if (targetHealth)
                 targetHealth.TakeDamage(5); // Deal this damage to the AI.

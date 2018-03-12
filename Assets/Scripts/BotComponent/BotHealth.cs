@@ -14,13 +14,15 @@ namespace SurvivaLight
         public Color zeroHealthColor = Color.red;         // The color the health bar will be when on no health.
         
         private float currentHealth;                      // How much health the bot currently has.
-        [HideInInspector]public bool dead;                                // Has the bot been reduced beyond zero health yet?
-        public AudioSource healthAudio;               // The audio source to play.
-        public AudioClip gettingHit;            // Audio to play when the bot is getting hit.
-        public AudioClip dying;           // Audio to play when the bot is dying.
+        [HideInInspector]public bool dead;                // Has the bot been reduced beyond zero health yet?
+        public AudioSource healthAudio;                   // The audio source to play.
+        public AudioClip gettingHit;                      // Audio to play when the bot is getting hit.
+        public AudioClip dying;                           // Audio to play when the bot is dying.
+        public GameObject[] bloodPrefabs;                 // Blood to spill when getting hit
+        public GameObject[] bloodEffects;
 
 
-        public float getHealth() // can get, not set
+        public float getHealth()                          // can get, not set
         {
             return currentHealth;
         }
@@ -56,6 +58,17 @@ namespace SurvivaLight
             }
         }
 
+        private void SpillBlood()
+        {
+            Vector3 randomPositionAround = transform.position;
+            randomPositionAround.x += Random.Range(-5, 5);
+            randomPositionAround.z += Random.Range(-5, 5);
+            Instantiate(bloodPrefabs[Random.Range(0,bloodPrefabs.Length)], randomPositionAround, new Quaternion(0, 0, 0, 0));
+            Instantiate(bloodEffects[Random.Range(0, bloodEffects.Length)], new Vector3(transform.position.x,transform.position.y,transform.position.z), new Quaternion(0, 0, 0, 0));
+            Debug.Log("Spill");
+            // TODO : spill in the opposite position to the impact
+        }
+
 
         public void TakeDamage(float amount)
         {
@@ -70,6 +83,7 @@ namespace SurvivaLight
             {
                 OnDeath();
             }
+            SpillBlood();
             Audio();
         }
 

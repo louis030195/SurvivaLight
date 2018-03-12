@@ -615,6 +615,16 @@ MonoBehaviour:
   healthAudio: {fileID: 82459234706412058}
   gettingHit: {fileID: 8300000, guid: 6e23819b1c3f5214685d09878de4c233, type: 3}
   dying: {fileID: 8300000, guid: 2671bbf2123eb7d4f9f75fa20f3931b4, type: 3}
+  bloodPrefabs:
+  - {fileID: 100000, guid: 358b75ea5451cf143ab19029a189097d, type: 2}
+  - {fileID: 100000, guid: cfc7596704bbd7f489156fcd4c05c7e9, type: 2}
+  - {fileID: 100000, guid: 18a11fd6df8ceb449b8785301026d639, type: 2}
+  - {fileID: 100000, guid: 6fe4d785744af2c40a2157f5b209d97f, type: 2}
+  - {fileID: 100000, guid: aec54d7a991d7b644b145d550a4b7831, type: 2}
+  - {fileID: 100000, guid: 14987c031123b98408a165a8bf1288d4, type: 2}
+  - {fileID: 100000, guid: 43dd1ba2a5dde844eb01240da13ab96b, type: 2}
+  bloodEffects:
+  - {fileID: 1400662294947608, guid: 17be1a73d00b474429bd5753f7849ce9, type: 2}
 --- !u!114 &114451859520564164
 MonoBehaviour:
   m_ObjectHideFlags: 1
