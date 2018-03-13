@@ -244,7 +244,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -324,7 +324,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -404,7 +404,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -614,7 +614,7 @@ MonoBehaviour:
   dead: 0
   healthAudio: {fileID: 82459234706412058}
   gettingHit: {fileID: 8300000, guid: 6e23819b1c3f5214685d09878de4c233, type: 3}
-  dying: {fileID: 8300000, guid: 2671bbf2123eb7d4f9f75fa20f3931b4, type: 3}
+  dying: {fileID: 0}
   bloodPrefabs:
   - {fileID: 100000, guid: 358b75ea5451cf143ab19029a189097d, type: 2}
   - {fileID: 100000, guid: cfc7596704bbd7f489156fcd4c05c7e9, type: 2}

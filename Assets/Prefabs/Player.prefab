@@ -129,7 +129,6 @@ GameObject:
   - component: {fileID: 114903688989783994}
   - component: {fileID: 54141085249069410}
   - component: {fileID: 114058200564718528}
-  - component: {fileID: 114243692875851196}
   - component: {fileID: 65687669646974250}
   - component: {fileID: 143216997889792320}
   m_Layer: 8
@@ -433,7 +432,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -537,6 +536,8 @@ MonoBehaviour:
   healthAudio: {fileID: 0}
   gettingHit: {fileID: 0}
   dying: {fileID: 0}
+  bloodPrefabs: []
+  bloodEffects: []
 --- !u!114 &114178974091938742
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -571,20 +572,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114243692875851196
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1697444515245688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 366b3503987bd724e8a797889b2acf88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
-  attackAudio: {fileID: 0}
-  attack: {fileID: 0}
 --- !u!114 &114339372249613088
 MonoBehaviour:
   m_ObjectHideFlags: 1

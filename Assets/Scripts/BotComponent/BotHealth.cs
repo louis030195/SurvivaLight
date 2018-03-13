@@ -67,12 +67,15 @@ namespace SurvivaLight
 
         private void SpillBlood()
         {
-            Vector3 randomPositionAround = transform.position;
-            randomPositionAround.x += Random.Range(-5, 5);
-            randomPositionAround.z += Random.Range(-5, 5);
-            Instantiate(bloodPrefabs[Random.Range(0,bloodPrefabs.Length)], randomPositionAround, new Quaternion(0, 0, 0, 0));
-            Instantiate(bloodEffects[Random.Range(0, bloodEffects.Length)], new Vector3(transform.position.x,transform.position.y,transform.position.z), new Quaternion(0, 0, 0, 0));
-            Debug.Log("Spill");
+            if (bloodEffects.Length > 0 && bloodEffects.Length > 0)
+            {
+                Vector3 randomPositionAround = transform.position;
+                randomPositionAround.x += Random.Range(-5, 5);
+                randomPositionAround.z += Random.Range(-5, 5);
+                Destroy(Instantiate(bloodPrefabs[Random.Range(0, bloodPrefabs.Length)], randomPositionAround, new Quaternion(0, 0, 0, 0)),5);
+                Destroy(Instantiate(bloodEffects[Random.Range(0, bloodEffects.Length)], new Vector3(transform.position.x, transform.position.y, transform.position.z), new Quaternion(0, 0, 0, 0)),3);
+                //Debug.Log("Spill");
+            }
             // TODO : spill in the opposite position to the impact
         }
 
@@ -109,8 +112,9 @@ namespace SurvivaLight
         {
             // Set the flag so that this function is only called once.
             dead = true;
-            animator.SetInteger("die", 1);
-            Destroy(gameObject,0.5f);
+            if(animator)
+                animator.SetInteger("die", 1);
+            Destroy(gameObject);
             //if (gameObject.GetComponent<NavMeshAgent>())
             //    gameObject.GetComponent<NavMeshAgent>().isStopped = true;
             //else

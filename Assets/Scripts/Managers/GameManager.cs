@@ -18,6 +18,8 @@ namespace SurvivaLight
 
         public int startingAi;                           // Think to use a scriptableobject to param instead
         public GameObject[] aiPrefabs;                   // prefabs
+        public AudioSource gameAudio;                   // The audio source to play.
+        public AudioClip[] ambients;                      // Ambient audio
         public GameObject playerPrefab;
         [HideInInspector]public List<AiManager> bots;     // A collection of managers for enabling and disabling different aspects of the bots.
         [HideInInspector]public PlayerManager player;
@@ -42,6 +44,9 @@ namespace SurvivaLight
             endWait = new WaitForSeconds(endDelay);
             spawnWait = new WaitForSeconds(spawnDelay);
 
+            if (gameAudio)
+                PlayRandomAmbient();
+
             totalAi = 50;
 
             gameState = GameState.Playing;
@@ -52,6 +57,14 @@ namespace SurvivaLight
             // Once the ai have been created, start the game.
             StartCoroutine(GameLoop());
         }
+
+        void PlayRandomAmbient()
+        {
+            gameAudio.clip = ambients[Random.Range(0, ambients.Length)];
+            gameAudio.Play();
+            Invoke("PlayRandomAmbient", gameAudio.clip.length);
+        }
+        
 
         Vector3 RandomCircle(Vector3 center, float radius)
         {
@@ -65,6 +78,7 @@ namespace SurvivaLight
 
         public IEnumerator SpawnAllAi()
         {
+
             //for (int i = 0; i < startingAi; i++)
             if(CountBotInstances() < totalAi)
             {
@@ -122,7 +136,6 @@ namespace SurvivaLight
 
         private IEnumerator GamePlaying()
         {
-            
             // As soon as the round begins
             // EnableControl();
 
