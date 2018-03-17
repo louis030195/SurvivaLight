@@ -68,7 +68,6 @@ namespace SurvivaLight
 
         public void Move(Vector3 destination)
         {
-            Debug.Log("Speed : " + navMeshAgent.speed);
             Audio();
             if (navMeshAgent.enabled)
                 navMeshAgent.destination = destination;

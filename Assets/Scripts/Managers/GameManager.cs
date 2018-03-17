@@ -25,6 +25,10 @@ namespace SurvivaLight
         [HideInInspector]public PlayerManager player;
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
+        public Button playButton;
+        public RawImage backgroundImage;
+        public Texture[] backgroundTextures;
+        private int indexTexture;
         public float startDelay = 5f;             // The delay between the start of phases.
         public float endDelay = 5f;               // The delay between the end of phases.
         public float spawnDelay = 2f;
@@ -34,27 +38,50 @@ namespace SurvivaLight
         private WaitForSeconds endWait;           // Used to have a delay whilst the game ends.
         private WaitForSeconds spawnWait;
         private int totalAi;                      // Total AIs that will spawn, changes per difficulty
+        private int countAi;
 
 
         // Use this for initialization
         void Start()
         {
+
+            Cursor.visible = true; // Needed after finishing game, the cursor need to be turned on again
+            Cursor.lockState = CursorLockMode.None;
+
             // Create the delays so they only have to be made once.
             startWait = new WaitForSeconds(startDelay);
             endWait = new WaitForSeconds(endDelay);
             spawnWait = new WaitForSeconds(spawnDelay);
 
-            if (gameAudio)
-                PlayRandomAmbient();
 
-            totalAi = 50;
+
+            totalAi = 10;
 
             gameState = GameState.Playing;
-            player = playerPrefab.GetComponent<PlayerManager>();
-            player.instance = Instantiate(playerPrefab, new Vector3(0, 1, 0), new Quaternion(0, 0, 0, 0));
 
+            
+            indexTexture = 0;
+            InvokeRepeating("ChangeBackground", 0.04f, 0.04f);
+            playButton.onClick.AddListener(StartGame);
 
-            // Once the ai have been created, start the game.
+            // TODO : put background screen
+        }
+
+        void ChangeBackground()
+        {
+            backgroundImage.texture = backgroundTextures[indexTexture];
+            indexTexture = indexTexture < backgroundTextures.Length - 1 ? indexTexture + 1 : 0;
+        }
+
+        void StartGame()
+        {
+            Destroy(playButton.gameObject); // TODO : just hide button
+            CancelInvoke("ChangeBackground");
+            backgroundImage.enabled = false;
+            Destroy(GetComponent<AudioListener>()); // During start screen there is no cameras because it's attached to the character
+                                                    // that didn't spawn yet, so we need an audio listener on game manager to
+                                                    // hear start music
+            PlayRandomAmbient();
             StartCoroutine(GameLoop());
         }
 
@@ -80,12 +107,13 @@ namespace SurvivaLight
         {
 
             //for (int i = 0; i < startingAi; i++)
-            if(CountBotInstances() < totalAi)
+            if(countAi < totalAi)
             {
                 AiManager bot = new AiManager();
                 bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, Random.Range(50,100)), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
                 bot.SetupAI();
                 bots.Add(bot);
+                countAi++;
                 yield return spawnWait;
             }
         }
@@ -123,6 +151,9 @@ namespace SurvivaLight
 
         private IEnumerator GameStarting()
         {
+            countAi = 0;
+            player = playerPrefab.GetComponent<PlayerManager>();
+            player.instance = Instantiate(playerPrefab, new Vector3(0, 1, 0), new Quaternion(0, 0, 0, 0));
             SpawnAllAi();
             // DisableControl();
             gameState = GameState.Playing;

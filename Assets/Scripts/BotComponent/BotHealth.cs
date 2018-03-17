@@ -112,8 +112,6 @@ namespace SurvivaLight
         {
             // Set the flag so that this function is only called once.
             dead = true;
-            if(animator)
-                animator.SetInteger("die", 1);
             Destroy(gameObject);
             //if (gameObject.GetComponent<NavMeshAgent>())
             //    gameObject.GetComponent<NavMeshAgent>().isStopped = true;
