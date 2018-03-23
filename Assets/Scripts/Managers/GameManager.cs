@@ -15,8 +15,7 @@ namespace SurvivaLight
             Playing
         };
 
-
-        public int startingAi;                           // Think to use a scriptableobject to param instead
+        
         public GameObject[] aiPrefabs;                   // prefabs
         public AudioSource gameAudio;                   // The audio source to play.
         public AudioClip[] ambients;                      // Ambient audio
@@ -39,7 +38,7 @@ namespace SurvivaLight
         private WaitForSeconds spawnWait;
         private int totalAi;                      // Total AIs that will spawn, changes per difficulty
         private int countAi;
-
+        private int totalWIns;                    // Used to increase difficulty every wins
 
         // Use this for initialization
         void Start()
@@ -54,8 +53,7 @@ namespace SurvivaLight
             spawnWait = new WaitForSeconds(spawnDelay);
 
 
-
-            totalAi = 10;
+            totalAi = 40;
 
             gameState = GameState.Playing;
 
@@ -73,8 +71,11 @@ namespace SurvivaLight
             indexTexture = indexTexture < backgroundTextures.Length - 1 ? indexTexture + 1 : 0;
         }
 
+
+
         void StartGame()
         {
+        
             Destroy(playButton.gameObject); // TODO : just hide button
             CancelInvoke("ChangeBackground");
             backgroundImage.enabled = false;
@@ -105,8 +106,7 @@ namespace SurvivaLight
 
         public IEnumerator SpawnAllAi()
         {
-
-            //for (int i = 0; i < startingAi; i++)
+            
             if(countAi < totalAi)
             {
                 AiManager bot = new AiManager();
