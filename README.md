@@ -1,5 +1,13 @@
 # SurvivaLight
 
+This is a survival game made with Unity3D, the objective is to survive of cows waves
+
+
+![Alt text](Screenshots/ss1.png?raw=true "Game screenshot 1")
+
+
+
+
 The pattern used is delegate and finite state machine
 
 # Current release
