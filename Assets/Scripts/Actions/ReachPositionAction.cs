@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SurvivaLight
 {
 
-    [CreateAssetMenu(menuName = "BotLight/Actions/ReachPosition")]
+    [CreateAssetMenu(menuName = "SurvivaLight/Actions/ReachPosition")]
     public class ReachPositionAction : Action
     {
 

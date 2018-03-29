@@ -24,6 +24,7 @@ namespace SurvivaLight
         [HideInInspector]public PlayerManager player;
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
+        public Text scoreText;                  // Reference to the overlay score
         public Button playButton;
         public RawImage backgroundImage;
         public Texture[] backgroundTextures;
@@ -53,7 +54,7 @@ namespace SurvivaLight
             spawnWait = new WaitForSeconds(spawnDelay);
 
 
-            totalAi = 40;
+            totalAi = 10;
 
             gameState = GameState.Playing;
 
@@ -93,7 +94,9 @@ namespace SurvivaLight
             Invoke("PlayRandomAmbient", gameAudio.clip.length);
         }
         
-
+        /*
+         * This function is used to calculate random points in a circle
+         */ 
         Vector3 RandomCircle(Vector3 center, float radius)
         {
             float ang = Random.value * 360;
@@ -104,13 +107,20 @@ namespace SurvivaLight
             return pos;
         }
 
+
+        /**
+         * This function is used to spawn all AIs in a random circle around 0,0,0.
+         * The spawning doesn't stop until all AIs has spawned
+         */
         public IEnumerator SpawnAllAi()
         {
             
             if(countAi < totalAi)
             {
-                AiManager bot = new AiManager();
-                bot.instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, Random.Range(50,100)), new Quaternion(0, 0, 0, 0)) as GameObject; // TODO : random circle spawn
+                AiManager bot = new AiManager
+                {
+                    instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, Random.Range(50, 100)), new Quaternion(0, 0, 0, 0)) as GameObject // TODO : random circle spawn
+                };
                 bot.SetupAI();
                 bots.Add(bot);
                 countAi++;
@@ -157,7 +167,7 @@ namespace SurvivaLight
             SpawnAllAi();
             // DisableControl();
             gameState = GameState.Playing;
-            messageText.text = "Playing";
+            messageText.text = "KILL THE NASTY COWS";
 
 
             // Wait for the specified length of time until yielding control back to the game loop.
@@ -194,12 +204,12 @@ namespace SurvivaLight
             // If we killed all AI = won, else we lost
             if (CountBotInstances() == 0)
             {
-                messageText.text = "Win";
+                messageText.text = "YOU WIN";
                 gameState = GameState.Won;
             }
             else
             {
-                messageText.text = "Game Over";
+                messageText.text = "GAME OVER";
                 gameState = GameState.Lost;
             }
 
@@ -234,6 +244,7 @@ namespace SurvivaLight
             {
                 if (bots[i].instance) count++;
             }
+            if (countAi > count) scoreText.text = "SCORE " + (countAi - count);
             return count;
         }
     }
