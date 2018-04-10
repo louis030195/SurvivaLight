@@ -71,6 +71,8 @@ namespace SurvivaLight
             Audio();
             if (navMeshAgent.enabled)
                 navMeshAgent.destination = destination;
+            navMeshAgent.speed += (Time.fixedTime / 5000);
+            //Debug.Log("speed : " + navMeshAgent.speed);
         }
 
 

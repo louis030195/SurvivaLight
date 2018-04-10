@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ namespace SurvivaLight
 
         public Text messageText;                  // Reference to the overlay Text to display winning text, etc.
         public Text scoreText;                  // Reference to the overlay score
+        public Text highestScoreText;                  // Reference to the overlay highest score
         public Button playButton;
         public RawImage backgroundImage;
         public Texture[] backgroundTextures;
@@ -39,11 +41,14 @@ namespace SurvivaLight
         private WaitForSeconds spawnWait;
         private int totalAi;                      // Total AIs that will spawn, changes per difficulty
         private int countAi;
-        private int totalWIns;                    // Used to increase difficulty every wins
+        private GameData currentGameData;
 
         // Use this for initialization
         void Start()
         {
+
+            //Debug.Log("playerpref : "+PlayerPrefs.GetInt("highestScore"));
+            highestScoreText.text = "HIGHEST SCORE " + PlayerPrefs.GetInt("highestScore");
 
             Cursor.visible = true; // Needed after finishing game, the cursor need to be turned on again
             Cursor.lockState = CursorLockMode.None;
@@ -54,7 +59,7 @@ namespace SurvivaLight
             spawnWait = new WaitForSeconds(spawnDelay);
 
 
-            totalAi = 10;
+            totalAi = 100;
 
             gameState = GameState.Playing;
 
@@ -62,6 +67,7 @@ namespace SurvivaLight
             indexTexture = 0;
             InvokeRepeating("ChangeBackground", 0.04f, 0.04f);
             playButton.onClick.AddListener(StartGame);
+            
 
             // TODO : put background screen
         }
@@ -117,6 +123,7 @@ namespace SurvivaLight
             
             if(countAi < totalAi)
             {
+                //Debug.Log("Time : "+Time.fixedTime);
                 AiManager bot = new AiManager
                 {
                     instance = Instantiate(aiPrefabs[Random.Range(0, aiPrefabs.Length)], RandomCircle(Vector3.zero, Random.Range(50, 100)), new Quaternion(0, 0, 0, 0)) as GameObject // TODO : random circle spawn
@@ -149,6 +156,9 @@ namespace SurvivaLight
                     break;
                 case GameState.Lost:
                     // If game is lost, restart the level.
+                    //Debug.Log("substring : "+scoreText.text.Substring(6));
+                    if (PlayerPrefs.GetInt("highestScore") < int.Parse(scoreText.text.Substring(6)))
+                        PlayerPrefs.SetInt("highestScore",int.Parse(scoreText.text.Substring(6)));
                     SceneManager.LoadScene(0);
                     break;
                 case GameState.Playing:
@@ -247,5 +257,6 @@ namespace SurvivaLight
             if (countAi > count) scoreText.text = "SCORE " + (countAi - count);
             return count;
         }
+
     }
 }
