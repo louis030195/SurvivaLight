@@ -16,7 +16,7 @@ namespace SurvivaLight
     {
         public override bool Decide(StateController controller)
         {
-            bool targetIsActive = !controller.chaseTarget.GetComponent<BotHealth>().dead;
+            bool targetIsActive = controller.chaseTarget ? !controller.chaseTarget.GetComponent<BotHealth>().dead : false;
             return targetIsActive;
         }
 

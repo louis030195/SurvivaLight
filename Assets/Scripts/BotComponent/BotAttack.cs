@@ -14,25 +14,28 @@ namespace SurvivaLight
 
         public void Attack(float attackRate, RaycastHit hit) // attackSpeed ?
         {
-            BotHealth target = hit.rigidbody.GetComponent<BotHealth>();
-            // Debug.Log("BotAttack : " + Time.time + " | " + nextAttackTime + " | " + target);
-            // Find the BotHealth script associated with the rigidbody.
-            if (target)
+            if (hit.rigidbody)
             {
-                
-                if (Time.time > nextAttackTime && target.isActiveAndEnabled)
+                BotHealth target = hit.rigidbody.GetComponent<BotHealth>();
+                // Debug.Log("BotAttack : " + Time.time + " | " + nextAttackTime + " | " + target);
+                // Find the BotHealth script associated with the rigidbody.
+                if (target)
                 {
-                    nextAttackTime = Time.time + attackRate;
-                    // Set the fired flag so only Fire is only called once.
-                    attacked = true;
-                    Audio();
+
+                    if (Time.time > nextAttackTime && target.isActiveAndEnabled)
+                    {
+                        nextAttackTime = Time.time + attackRate;
+                        // Set the fired flag so only Fire is only called once.
+                        attacked = true;
+                        Audio();
 
 
-                    if (target.getHealth() <= 0)
-                        return;
-                    
-                    target.TakeDamage(damage);
-                    
+                        if (target.getHealth() <= 0)
+                            return;
+
+                        target.TakeDamage(damage);
+
+                    }
                 }
             }
 

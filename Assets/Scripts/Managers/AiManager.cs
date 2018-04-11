@@ -31,7 +31,7 @@ namespace SurvivaLight
 
         }
 
-        // Used during the phases of the game where the player shouldn't be able to control their tank.
+        
         public void DisableControl()
         {
             if (botMovement != null)
@@ -43,8 +43,7 @@ namespace SurvivaLight
             botAttack.enabled = false;
         }
 
-
-        // Used during the phases of the game where the player should be able to control their tank.
+        
         public void EnableControl()
         {
             if (botMovement != null)

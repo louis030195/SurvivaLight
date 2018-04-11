@@ -32,7 +32,7 @@ namespace SurvivaLight
         public Texture[] backgroundTextures;
         private int indexTexture;
         public float startDelay = 5f;             // The delay between the start of phases.
-        public float endDelay = 5f;               // The delay between the end of phases.
+        public float endDelay = 10f;               // The delay between the end of phases.
         public float spawnDelay = 2f;
 
         private GameState gameState;
@@ -46,7 +46,7 @@ namespace SurvivaLight
         // Use this for initialization
         void Start()
         {
-
+            gameObject.AddComponent(typeof(AudioListener)); // Required because there is not camera on start
             //Debug.Log("playerpref : "+PlayerPrefs.GetInt("highestScore"));
             highestScoreText.text = "HIGHEST SCORE " + PlayerPrefs.GetInt("highestScore");
 
@@ -138,16 +138,16 @@ namespace SurvivaLight
         // This is called from start and will run each phase of the game one after another.
         private IEnumerator GameLoop()
         {
-            // Start off by running the 'RoundStarting' coroutine but don't return until it's finished.
+            // Start off by running the 'GameStarting' coroutine but don't return until it's finished.
             yield return StartCoroutine(GameStarting());
 
-            // Once the 'RoundStarting' coroutine is finished, run the 'RoundPlaying' coroutine but don't return until it's finished.
+            // Once the 'GameStarting' coroutine is finished, run the 'GamePlaying' coroutine but don't return until it's finished.
             yield return StartCoroutine(GamePlaying());
 
-            // Once execution has returned here, run the 'RoundEnding' coroutine, again don't return until it's finished.
+            // Once execution has returned here, run the 'GameEnding' coroutine, again don't return until it's finished.
             yield return StartCoroutine(GameEnding());
 
-            // This code is not run until 'RoundEnding' has finished.  At which point, check if a game winner has been found.
+            // This code is not run until 'GameEnding' has finished.  At which point, check if a game winner has been found.
             switch (gameState)
             {
                 case GameState.Won:
@@ -187,7 +187,7 @@ namespace SurvivaLight
 
         private IEnumerator GamePlaying()
         {
-            // As soon as the round begins
+            // As soon as the game begins
             // EnableControl();
 
             // Clear the text from the screen.
@@ -198,11 +198,6 @@ namespace SurvivaLight
                 // ... return on the next frame.
                 yield return StartCoroutine(SpawnAllAi());
             } while (!GameFinished()) ;
-        }
-
-        private bool GameFinished()
-        {
-            return CountBotInstances() == 0 || !player.instance; // All AIs are dead or player is dead
         }
 
 
@@ -216,16 +211,31 @@ namespace SurvivaLight
             {
                 messageText.text = "YOU WIN";
                 gameState = GameState.Won;
+
+                // TODO : Camera animation
             }
             else
             {
                 messageText.text = "GAME OVER";
                 gameState = GameState.Lost;
-            }
 
+                // TODO : Camera animation
+                Camera endCamera = Instantiate(new Camera(), Vector3.zero, Quaternion.identity);
+                endCamera.transform.position = Vector3.Lerp(new Vector3(0,100,0), new Vector3(0, 100, 0), 0.5f);
+                endCamera.transform.rotation = Quaternion.Slerp(new Quaternion(0,0,0,0), new Quaternion(0, 0, 0, 0), 0.5f);
+            }
             // Wait for the specified length of time until yielding control back to the game loop.
-            yield return endWait;
+            yield return endWait; // TODO : DOESNT WAIT ????????????
         }
+
+
+        private bool GameFinished()
+        {
+            return CountBotInstances() == 0 || !player.instance; // All AIs are dead or player is dead
+        }
+
+
+
 
 
 
