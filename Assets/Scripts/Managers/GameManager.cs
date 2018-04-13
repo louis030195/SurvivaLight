@@ -41,7 +41,6 @@ namespace SurvivaLight
         private WaitForSeconds spawnWait;
         private int totalAi;                      // Total AIs that will spawn, changes per difficulty
         private int countAi;
-        private GameData currentGameData;
 
         // Use this for initialization
         void Start()
@@ -156,7 +155,16 @@ namespace SurvivaLight
                     break;
                 case GameState.Lost:
                     // If game is lost, restart the level.
-                    //Debug.Log("substring : "+scoreText.text.Substring(6));
+
+                    
+                    /*
+                    // TODO : End game camera animation
+                    gameObject.AddComponent<Camera>();
+                    Camera endCamera = gameObject.GetComponent<Camera>();
+                    endCamera.transform.position = Vector3.Lerp(new Vector3(0, 100, 0), new Vector3(0, 100, 0), 0.5f);
+                    endCamera.transform.rotation = Quaternion.Slerp(new Quaternion(0, 0, 0, 0), new Quaternion(0, 0, 0, 0), 0.5f);
+                    */
+
                     if (PlayerPrefs.GetInt("highestScore") < int.Parse(scoreText.text.Substring(6)))
                         PlayerPrefs.SetInt("highestScore",int.Parse(scoreText.text.Substring(6)));
                     SceneManager.LoadScene(0);
@@ -174,8 +182,7 @@ namespace SurvivaLight
             countAi = 0;
             player = playerPrefab.GetComponent<PlayerManager>();
             player.instance = Instantiate(playerPrefab, new Vector3(0, 1, 0), new Quaternion(0, 0, 0, 0));
-            SpawnAllAi();
-            // DisableControl();
+
             gameState = GameState.Playing;
             messageText.text = "KILL THE NASTY COWS";
 
@@ -187,8 +194,6 @@ namespace SurvivaLight
 
         private IEnumerator GamePlaying()
         {
-            // As soon as the game begins
-            // EnableControl();
 
             // Clear the text from the screen.
             messageText.text = string.Empty;
@@ -203,29 +208,23 @@ namespace SurvivaLight
 
         private IEnumerator GameEnding()
         {
-            // Stop from moving.
-            // DisableControl();
 
             // If we killed all AI = won, else we lost
             if (CountBotInstances() == 0)
             {
                 messageText.text = "YOU WIN";
                 gameState = GameState.Won;
-
-                // TODO : Camera animation
+                
             }
             else
             {
                 messageText.text = "GAME OVER";
                 gameState = GameState.Lost;
 
-                // TODO : Camera animation
-                Camera endCamera = Instantiate(new Camera(), Vector3.zero, Quaternion.identity);
-                endCamera.transform.position = Vector3.Lerp(new Vector3(0,100,0), new Vector3(0, 100, 0), 0.5f);
-                endCamera.transform.rotation = Quaternion.Slerp(new Quaternion(0,0,0,0), new Quaternion(0, 0, 0, 0), 0.5f);
+
             }
             // Wait for the specified length of time until yielding control back to the game loop.
-            yield return endWait; // TODO : DOESNT WAIT ????????????
+            yield return endWait;
         }
 
 
@@ -233,30 +232,7 @@ namespace SurvivaLight
         {
             return CountBotInstances() == 0 || !player.instance; // All AIs are dead or player is dead
         }
-
-
-
-
-
-
-        private void DisableControl()
-        {
-            for (int i = 0; i < bots.Count; i++)
-            {
-                bots[i].DisableControl();
-            }
-            player.control = false;
-        }
-
-        private void EnableControl()
-        {
-            for (int i = 0; i < bots.Count; i++)
-            {
-                bots[i].EnableControl();
-            }
-            player.control = true;
-        }
-
+        
         private int CountBotInstances()
         {
             int count = 0;

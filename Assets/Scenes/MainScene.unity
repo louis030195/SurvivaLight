@@ -180,7 +180,7 @@ Prefab:
     - target: {fileID: 114740196032517956, guid: a89bdd7c3545e564887ffa859af033d2,
         type: 2}
       propertyPath: endDelay
-      value: 20
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 81267086466236372, guid: a89bdd7c3545e564887ffa859af033d2, type: 2}
